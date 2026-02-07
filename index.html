@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Propose Day 💍</title>
+
+<style>
+:root{
+  --pink:#ff4b6e;
+  --light:#ff9a9e;
+}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Segoe UI', sans-serif;
+  background:linear-gradient(135deg,var(--pink),var(--light));
+  color:white;
+  text-align:center;
+  overflow:hidden;
+}
+.card{
+  background:rgba(255,255,255,0.18);
+  padding:30px;
+  border-radius:26px;
+  width:90%;
+  max-width:420px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.35);
+}
+h1{font-size:2.2rem}
+p{font-size:1.15rem;line-height:1.6}
+.ring{
+  font-size:3.8rem;
+  margin:14px 0;
+  animation:pulse 1.3s infinite;
+}
+.buttons{
+  margin-top:20px;
+  min-height:90px;
+}
+button{
+  padding:12px 26px;
+  font-size:1.1rem;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  margin:8px;
+  transition:0.3s ease;
+}
+.yes{
+  background:#fff;
+  color:var(--pink);
+}
+.no{
+  background:rgba(255,255,255,0.7);
+  color:#ff4b6e;
+  opacity:0.6;
+}
+.mute{
+  position:fixed;
+  top:15px;
+  right:15px;
+  padding:6px 12px;
+  border-radius:20px;
+  background:rgba(0,0,0,0.3);
+  color:white;
+}
+.heart{
+  position:absolute;
+  font-size:18px;
+  animation:float 6s linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh)}
+  100%{transform:translateY(-10vh);opacity:0}
+}
+@keyframes pulse{
+  50%{transform:scale(1.25)}
+}
+</style>
+</head>
+
+<body>
+
+<button class="mute" onclick="toggleMute()">🔊</button>
+
+<div class="card" id="card">
+  <h1>Happy Propose Day 💖</h1>
+  <div class="ring">💍</div>
+  <p id="text"></p>
+
+  <div class="buttons">
+    <button class="yes" id="yesBtn">YES 💘</button>
+    <button class="no" id="noBtn">NO 🙈</button>
+  </div>
+</div>
+
+<audio id="sad" src="sad.mp3" loop></audio>
+<audio id="happy" src="happy.mp3" loop></audio>
+
+<script>
+/* Typing */
+const msg="Aaj main apna dil tumhare saamne rakh raha hoon ❤️\nKya tum meri zindagi ka hissa banogi?";
+let i=0;
+(function type(){
+  if(i<msg.length){
+    text.innerHTML+=msg[i]=="\n"?"<br>":msg[i];
+    i++; setTimeout(type,45);
+  }
+})();
+
+/* Audio */
+const sad=document.getElementById("sad");
+const happy=document.getElementById("happy");
+sad.volume=0.4;
+happy.volume=0.7;
+let muted=false, sadStarted=false;
+
+function toggleMute(){
+  muted=!muted;
+  sad.muted=happy.muted=muted;
+  document.querySelector(".mute").innerText=muted?"🔇":"🔊";
+}
+
+/* Buttons logic */
+let size=1,count=0;
+
+noBtn.onclick=()=>{
+  if(!sadStarted){
+    sad.play();
+    sadStarted=true;
+  }
+  count++;
+  size+=0.22;
+  yesBtn.style.transform=`scale(${size})`;
+  noBtn.style.opacity=Math.max(0.35,1-count*0.12);
+
+  const m=[
+    "Soch lo na 🥺",
+    "Dil dukhta ja raha hai 💔",
+    "Itna bhi kya NO 😢",
+    "Maan jao please 😭",
+    "Dil se pooch lo ❤️"
+  ];
+  noBtn.innerText=m[Math.min(count-1,m.length-1)];
+};
+
+yesBtn.onclick=()=>{
+  sad.pause();
+  sad.currentTime=0;
+
+  happy.currentTime=0;
+  happy.play();   // 🔥 FIX: direct play
+
+  card.innerHTML=`
+    <h1>Yayyyy 💃❤️</h1>
+    <div class="ring">💖💍💖</div>
+    <p>
+      Tumne YES bol diya 💕<br><br>
+      Main hamesha tumhara khayal rakhunga ❤️
+    </p>
+    <h2>I Love You 💖</h2>`;
+  rain();
+};
+
+/* Hearts */
+function rain(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },300);
+}
+</script>
+
+</body>
+</html>
